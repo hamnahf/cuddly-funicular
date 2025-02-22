@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+// prisma/schema.prisma
+model MindMap {
+  id        String   @id @default(cuid())
+  title     String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  nodes     Node[]
+}
+
+model Node {
+  id        String   @id @default(cuid())
+  content   String
+  x         Float
+  y         Float
+  parentId  String?
+  mindMapId String
+  mindMap   MindMap  @relation(fields: [mindMapId], references: [id])
+  parent    Node?    @relation("NodeToNode", fields: [parentId], references: [id])
+  children  Node[]   @relation("NodeToNode")
+}
