@@ -1,9 +1,16 @@
 
 // components/MindMapNode.tsx
 import { useState } from 'react';
-import { motion, Reorder } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { Node } from '@prisma/client';
 
-const MindMapNode = ({ node, onAddChild, onUpdatePosition }) => {
+interface MindMapNodeProps {
+  node: Node;
+  onAddChild: (id: string) => void;
+  onUpdatePosition: (variables: { nodeId: string; x: number; y: number; }) => void;
+}
+
+const MindMapNode: React.FC<MindMapNodeProps> = ({ node, onAddChild, onUpdatePosition }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(node.content);
 
@@ -12,7 +19,7 @@ const MindMapNode = ({ node, onAddChild, onUpdatePosition }) => {
       drag
       dragMomentum={false}
       onDragEnd={(_, info) => {
-        onUpdatePosition(node.id, info.point.x, info.point.y);
+        onUpdatePosition({ nodeId: node.id, x: info.point.x, y: info.point.y });
       }}
       className="absolute p-4 bg-white rounded-lg shadow-md cursor-move"
       style={{ left: node.x, top: node.y }}
